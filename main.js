@@ -3,14 +3,14 @@ const playerBoard = document.querySelector(".user-board")
 const enemyBoard = document.querySelector(".enemy-board")
 const startButton = document.querySelector(".start-button")
 const restartButton = document.querySelector(".restart-button")
+const shipContainer = document.querySelector(".ship-container")
 const destroyerSquares = document.querySelector(".destroyer-squares")
 const submarineSquares = document.querySelector(".submarine-squares")
 const cruiserSquares = document.querySelector(".cruiser-squares")
 const battleshipSquares = document.querySelector(".battleship-squares")
 const carrierSquares = document.querySelector(".carrier-squares")
-const shipContainer = document.querySelector(".ship-container")
-const rotateButton = document.querySelector(".rotate")
 const rotateBtnContainer = document.querySelector(".rotate-container")
+const rotateButton = document.querySelector(".rotate")
 const message = document.createElement("div")
 
 const width = 10
@@ -77,28 +77,31 @@ const createUserShips = (ships) => {
 const createComputerShip = (ship) => {
   const randomStartIndex = Math.floor(Math.random() * computerGrid.length)
   const randomOrientation = Math.random() < 0.5 ? 1 : 10
-  const checkBottomBoundary = ship.dir.some(index => (randomStartIndex + (index * randomOrientation)) > 99)
-  
+  const checkBottomBoundary = ship.dir.some((index) => randomStartIndex + index * randomOrientation > 99)
+
   let checkRightBoundary
   let checkIfShipSquare
-  
+
   if (randomStartIndex % width === 0) {
     checkRightBoundary = false
   } else {
-    checkRightBoundary = ship.dir.some(index => (randomStartIndex + index) % width === 0)
+    checkRightBoundary = ship.dir.some((index) => (randomStartIndex + index) % width === 0)
   }
 
   if (!checkBottomBoundary && !checkRightBoundary) {
-    checkIfShipSquare = ship.dir.some(index => computerGrid[randomStartIndex + (index * randomOrientation)].className.includes("computer-ship"))
+    checkIfShipSquare = ship.dir.some((index) =>
+      computerGrid[randomStartIndex + index * randomOrientation].className.includes("computer-ship")
+    )
   }
-
+  
   if (!checkBottomBoundary && !checkRightBoundary && !checkIfShipSquare) {
     for (index of ship.dir) {
-      computerGrid[randomStartIndex + (index * randomOrientation)].classList = "computer-ship squares"
-      computerGrid[randomStartIndex + (index * randomOrientation)].ship = ship.name
+      computerGrid[randomStartIndex + index * randomOrientation].classList = "computer-ship squares"
+      computerGrid[randomStartIndex + index * randomOrientation].ship = ship.name
     }
   } else createComputerShip(ship)
 }
+
 const createGameElements = () => {
   createBoard(computerGrid, enemyBoard)
   createBoard(playerGrid, playerBoard)
@@ -112,12 +115,41 @@ const createGameElements = () => {
 
 createGameElements()
 
+const rotateShips = (e) => {
+  for (const ship of shipContainer.children) {
+    const classNameSplit = ship.className.split("-")
+    const shipName = classNameSplit[0]
+    if (ship.className.includes("-vertical")) {
+      ship.classList = shipName + "-squares ship-h"
+    } else {
+      ship.classList = shipName + "-squares-vertical ship-v"
+    }
+  }
+  isHorizontal = !isHorizontal
+}
+
+rotateButton.addEventListener("click", rotateShips)
+
+const messageOnTimer = (targetPlayer, targetShip) => {
+  const otherPlayer = targetPlayer === "Player" ? "Computer" : "You"
+  if (computerTotalHits === 16 || playerTotalHits === 16) {
+    message.innerHTML = `${otherPlayer} sunk all ${targetPlayer === "Computer" ? "computer's" : "your"} ships<br><br>${targetPlayer} lost!`
+    message.classList = "ingame-messages"
+    body.appendChild(message)
+  } else {
+    message.textContent = `${otherPlayer} sunk ${targetPlayer}'s ${targetShip}`
+    message.classList = "ingame-messages"
+    body.appendChild(message)
+    setTimeout(() => (message.classList = "hidden"), 3000)
+  }
+}
+
 const hitCounter = (targetPlayer, targetShip) => {
   if (targetPlayer === "Computer") {
     if (!computerHits[targetShip]) {
       computerHits[targetShip] = 1
     } else computerHits[targetShip] += 1
-
+    
     if (targetShip === "destroyer" && computerHits.destroyer === 2) {
       messageOnTimer(targetPlayer, targetShip)
     } else if (targetShip === "submarine" && computerHits.submarine === 3) {
@@ -134,7 +166,7 @@ const hitCounter = (targetPlayer, targetShip) => {
     if (!playerHits[targetShip]) {
       playerHits[targetShip] = 1
     } else playerHits[targetShip] += 1
-
+    
     if (targetShip === "destroyer" && playerHits.destroyer === 2) {
       messageOnTimer(targetPlayer, targetShip)
     } else if (targetShip === "submarine" && playerHits.submarine === 3) {
@@ -147,20 +179,6 @@ const hitCounter = (targetPlayer, targetShip) => {
       messageOnTimer(targetPlayer, targetShip)
     }
     playerTotalHits += 1
-  }
-}
-
-const messageOnTimer = (targetPlayer, targetShip) => {
-  const otherPlayer = targetPlayer === "Player" ? "Computer" : "You"
-  if (computerTotalHits === 16 || playerTotalHits === 16) {
-    message.innerHTML = `${otherPlayer} sunk all ${targetPlayer === "Computer" ? "computer's" : "your"} ships<br><br>${targetPlayer} lost!`
-    message.classList = "ingame-messages"
-    body.appendChild(message)
-  } else {
-    message.textContent = `${otherPlayer} sunk ${targetPlayer}'s ${targetShip}`
-    message.classList = "ingame-messages"
-    body.appendChild(message)
-    setTimeout(() => message.classList = "hidden", 3000)
   }
 }
 
@@ -182,28 +200,27 @@ const shootComputerShip = (e) => {
     enemyBoard.removeEventListener("click", shootComputerShip)
     setTimeout(() => shootPlayerShip(), 1000)
   }
-} 
+}
 
 enemyBoard.addEventListener("click", shootComputerShip)
 
-shootPlayerShip = () => {
+const shootPlayerShip = () => {
   if (computerTotalHits <= 16 && playerTotalHits <= 16) {
     const randomIndex = Math.floor(Math.random() * playerGrid.length)
     const checkIfEmpty = playerGrid[randomIndex].children.length
     const target = playerGrid[randomIndex]
-    let targetShip
     const circle = document.createElement("div")
+    let targetShip
     if (checkIfEmpty === 0) {
       circle.classList = "circle black"
       target.appendChild(circle)
     } else {
-      if(target.firstChild.children.length === 0 && !target.firstChild.className.includes("circle")) {
+      if (target.firstChild.children.length === 0 && !target.firstChild.className.includes("circle")) {
         targetShip = target.shipname
         circle.classList = "circle red"
         target.classList = target.className
         target.firstChild.appendChild(circle)
         hitCounter("Player", targetShip)
-
       } else {
         shootPlayerShip()
       }
@@ -212,21 +229,6 @@ shootPlayerShip = () => {
   enemyBoard.addEventListener("click", shootComputerShip)
 }
 
-const rotateShips = (e) => {
-  for (const ship of shipContainer.children) {
-    const classNameSplit = ship.className.split("-")
-    const shipName = classNameSplit[0]
-    if (ship.className.includes("-vertical")) {
-      ship.classList = shipName+"-squares ship-h"
-    } else {
-      ship.classList = shipName+"-squares-vertical ship-v"
-    }
-  }
-  isHorizontal = !isHorizontal
-}
-
-rotateButton.addEventListener("click", rotateShips)
-
 const dragStart = (e) => {
   e.target.classList.add("dragging")
   e.dataTransfer.setData("text/plain", [
@@ -234,57 +236,6 @@ const dragStart = (e) => {
     e.target.lastChild.id,
   ])
 }
-const dragEnd = (e) => {
-  e.target.classList.remove("dragging")
-  if (e.dataTransfer.dropEffect !== "none") {
-    e.target.remove()
-    if (shipContainer.children.length === 0) {
-      body.removeChild(shipContainer)
-      body.removeChild(rotateBtnContainer)
-      startButton.disabled = false
-    }
-  }
-  return
-}
-
-const checkHorizontalCollision = (
-  shipCollisionArray,
-  shipLastIndex,
-  closestBoundary,
-  event
-  ) => {
-    if (shipLastIndex > closestBoundary) event.dataTransfer.dropEffect = "none"
-    for (square of shipCollisionArray) {
-    for (child of square.children) {
-      if (child.className === "ship-square") {
-        event.dataTransfer.dropEffect = "none"
-      }
-    }
-  }
-}
-
-const checkVerticalCollision = (
-  shipCollisionArrayVertical,
-  shipFirstIndex,
-  event
-  ) => {
-    for (let i = 0; i <= Number(dragData.slice(-1)); i++) {
-      shipCollisionArrayVertical
-        .push(playerGrid
-        .slice(shipFirstIndex, shipFirstIndex + 1))
-        shipFirstIndex += 10
-    }
-    for (square of shipCollisionArrayVertical) {
-      for (element of square) {
-        for (child of element.children) {
-          if (child.className === "ship-square") {
-            event.dataTransfer.dropEffect = "none"
-          }
-        }
-      }
-    }
-  }
-        
 
 const dragOver = (e) => {
   e.preventDefault()
@@ -308,11 +259,7 @@ const dragOver = (e) => {
       e
     )
   } else {
-    checkVerticalCollision(
-      shipCollisionArrayVertical,
-      shipFirstIndex,
-      e
-    )
+    checkVerticalCollision(shipCollisionArrayVertical, shipFirstIndex, e)
     if (shipLastIndexVertical > 99) e.dataTransfer.dropEffect = "none"
   }
 }
@@ -347,13 +294,67 @@ const dragDrop = (e) => {
   e.target.classList = draggedClassName
 }
 
+const dragEnd = (e) => {
+  e.target.classList.remove("dragging")
+  if (e.dataTransfer.dropEffect !== "none") {
+    e.target.remove()
+    if (shipContainer.children.length === 0) {
+      body.removeChild(shipContainer)
+      body.removeChild(rotateBtnContainer)
+      startButton.disabled = false
+      message.textContent = 'Press "Start game" to begin'
+      message.classList = "ingame-messages"
+      body.appendChild(message)
+    }
+  }
+  return
+}
+
+const checkHorizontalCollision = (
+  shipCollisionArray,
+  shipLastIndex,
+  closestBoundary,
+  event
+) => {
+  if (shipLastIndex > closestBoundary) event.dataTransfer.dropEffect = "none"
+  for (square of shipCollisionArray) {
+    for (child of square.children) {
+      if (child.className === "ship-square") {
+        event.dataTransfer.dropEffect = "none"
+      }
+    }
+  }
+}
+
+const checkVerticalCollision = (
+  shipCollisionArrayVertical,
+  shipFirstIndex,
+  event
+) => {
+  for (let i = 0; i <= Number(dragData.slice(-1)); i++) {
+    shipCollisionArrayVertical.push(
+      playerGrid.slice(shipFirstIndex, shipFirstIndex + 1)
+    )
+    shipFirstIndex += 10
+  }
+  for (square of shipCollisionArrayVertical) {
+    for (element of square) {
+      for (child of element.children) {
+        if (child.className === "ship-square") {
+          event.dataTransfer.dropEffect = "none"
+        }
+      }
+    }
+  }
+}
+
 const addShipSquare = (
   isHorizontal,
   targetDiv,
   draggedClassName,
   droppedShipLength,
   dropTargetId
-) => {
+  ) => {
   let getShipName = draggedClassName.split("-")
   for (let i = 0; i <= droppedShipLength; i++) {
     targetDiv = playerGrid[dropTargetId]
@@ -388,15 +389,14 @@ const assignDragEventListeners = () => {
 }
 assignDragEventListeners()
 
-restartButton.addEventListener("click", () => location.reload())
-
-const start = (e) => {
+const handleStartGame = (e) => {
   startGame = true
   message.innerHTML = "Game Started<br><br>Good luck!"
   message.classList = "ingame-messages"
   body.appendChild(message)
   startButton.disabled = true
-  setTimeout(() => message.classList = "hidden", 5000)
+  setTimeout(() => (message.classList = "hidden"), 5000)
 }
 
-startButton.addEventListener("click", start)
+startButton.addEventListener("click", handleStartGame)
+restartButton.addEventListener("click", () => location.reload())
