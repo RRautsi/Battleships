@@ -153,11 +153,11 @@ const hitCounter = (targetPlayer, targetShip) => {
 const messageOnTimer = (targetPlayer, targetShip) => {
   const otherPlayer = targetPlayer === "Player" ? "Computer" : "You"
   if (computerTotalHits === 16 || playerTotalHits === 16) {
-    message.innerHTML = `${otherPlayer} sank all ${targetPlayer === "Computer" ? "computer's" : "your"} ships<br><br>${targetPlayer} lost!`
+    message.innerHTML = `${otherPlayer} sunk all ${targetPlayer === "Computer" ? "computer's" : "your"} ships<br><br>${targetPlayer} lost!`
     message.classList = "ingame-messages"
     body.appendChild(message)
   } else {
-    message.textContent = `${otherPlayer} sank ${targetPlayer}'s ${targetShip}`
+    message.textContent = `${otherPlayer} sunk ${targetPlayer}'s ${targetShip}`
     message.classList = "ingame-messages"
     body.appendChild(message)
     setTimeout(() => message.classList = "hidden", 3000)
