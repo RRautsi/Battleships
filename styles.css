@@ -1,0 +1,245 @@
+/* 
+TODO:
+- Make shared classes to make code
+more readable.
+- Cleanup unnescessary classes
+*/
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: linear-gradient(
+    90deg,
+    rgba(3, 13, 150, 0.85) 0%,
+    rgba(15, 100, 250, 0.5) 50%,
+    rgba(3, 13, 150, 0.85) 100%
+  );
+}
+
+.header {
+  font-family: "Cairo Play", cursive;
+  display: flex;
+  justify-content: center;
+  font-size: 6vmin;
+  margin: 0;
+}
+
+.board-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.user-board {
+  background-color: rgba(0, 50, 255, 0.5);
+  border-radius: 5px;
+  display: grid;
+  row-gap: 1px;
+  column-gap: 1px;
+  grid-template-rows: repeat(10, 4.6vmin);
+  grid-template-columns: repeat(10, 4.6vmin);
+}
+
+.enemy-board {
+  background-color: rgba(0, 50, 255, 0.5);
+  border-radius: 5px;
+  display: grid;
+  margin-left: 2vmin;
+  row-gap: 1px;
+  column-gap: 1px;
+  grid-template-rows: repeat(10, 4.6vmin);
+  grid-template-columns: repeat(10, 4.6vmin);
+}
+
+.squares,
+.no-hover {
+  display: flex;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 5px;
+}
+
+.squares:hover {
+  background: linear-gradient(to bottom, #fb9e25 5%, #ffc477 100%);
+  background-color: #fb9e25;
+}
+
+.squares:active {
+  position: relative;
+  top: 1px;
+}
+
+.circle {
+  margin: auto;
+  border-radius: 50%;
+  width: 2vmin;
+  height: 2vmin;
+}
+
+.black{
+  background-color: black;
+}
+
+.red {
+  background-color: red;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
+.start-button {
+  background-color: #ff6600;
+  padding: 0.5em 1.09em;
+  margin: 2vmin;
+}
+
+.restart-button {
+  background-color: #ff6600;
+  padding: 0.5em 2.1em;
+  margin: 2vmin;
+
+}
+
+.rotate-container {
+  display: flex;
+  justify-content: center;
+}
+
+.rotate {
+  padding: 0.3em 1em;
+  margin-bottom: 1vmin;
+}
+
+.my-button {
+  box-shadow: inset 0px 1px 0px 0px #fce2c1;
+  background: linear-gradient(to bottom, #ffc477 5%, #fb9e25 100%);
+  background-color: #ffc477;
+  border-radius: 6px;
+  border: 1px solid #eeb44f;
+  display: inline-block;
+  cursor: pointer;
+  color: #ffffff;
+  font-family: Arial;
+  font-size: 2vmin;
+  font-weight: bold;
+  text-decoration: none;
+  text-shadow: 0px 1px 0px #cc9f52;
+}
+.my-button:hover {
+  background: linear-gradient(to bottom, #fb9e25 5%, #ffc477 100%);
+  background-color: #fb9e25;
+}
+.my-button:active {
+  position: relative;
+  top: 1px;
+}
+.my-button:disabled {
+  background: #4b4a4a;
+  border: 1px solid #4b4a4a;
+  background-color: #7b7772;
+  color: #555555;
+  cursor: default;
+  top: 0px;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.ship-container {
+  text-align: center;
+  margin: 0 auto;
+  padding-left: 4.7vmin;
+  padding-top: .6vmin;
+  padding-bottom: 1.2vmin;
+  height: calc(4.7vmin * 5);
+  width: calc(4.7vmin * 6);
+  border: solid 1px;
+}
+
+.ship-square {
+  cursor: move;
+  display: flex;
+  flex-wrap: wrap;
+  width: 4.6vmin;
+  height: 4.6vmin;
+}
+
+.ship-v {
+  display: flex;
+  flex-wrap: wrap;
+  float: left;
+  background-color: #9f9f9f;
+  width: 4.6vmin;
+  border-radius: 0.5vmin;
+  border: 1px solid black;
+}
+
+
+.ship-h{
+  display: flex;
+  flex-wrap: wrap;
+  background-color: #9f9f9f;
+  height: 4.6vmin;
+  border-radius: 0.5vmin;
+  border: 1px solid rgb(41, 41, 41);
+}
+
+.destroyer-squares {
+  width: calc(4.6vmin * 2);
+}
+
+.submarine-squares {
+  width: calc(4.65vmin * 3);
+}
+
+.cruiser-squares {
+  width: calc(4.65vmin * 3);
+}
+
+.battleship-squares {
+  width: calc(4.7vmin * 4);
+}
+
+.carrier-squares {
+  width: calc(4.7vmin * 5);
+}
+
+.destroyer-squares-vertical {
+  height: calc(4.6vmin * 2);
+}
+
+.submarine-squares-vertical {
+  height: calc(4.65vmin * 3);
+}
+
+.cruiser-squares-vertical {
+  height: calc(4.65vmin * 3);
+}
+
+.battleship-squares-vertical {
+  height: calc(4.7vmin * 4);
+}
+
+.carrier-squares-vertical {
+  height: calc(4.7vmin * 5);
+}
+
+.computer-ship {
+  display: flex;
+}
+
+
+.ingame-messages {
+  text-align: center;
+  margin: 0 auto;
+  height: 4.7vmin;
+  width: 100%;
+  color: black;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 4vmin;
+}
+
+.hidden {
+  opacity: 0;
+}
