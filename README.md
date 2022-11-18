@@ -6,10 +6,18 @@ This is a personal side project that I wanted to make while studying Full Stack 
 ### Features
 This game has some basic functionalities:
 
-- Drag&Drop for player ships, made with HTML Drag and Drop API. Corner cases have been taken care of. You can't place ships onto each other or out of bounds.
-- Random ship placement for computer. Computer ships cannot spawn on each other and it has been taken care of with recursive ship placement.
-- Random number shooting for computer so computer is easy to win. I might improve "AI" of the computer some day.
-- Tried to make the UI as responsive as possible so you can play it with any screen size. It should not look wonky when adjusting browser size.
+- Drag&Drop for player ships, made with HTML Drag and Drop API. You can't place ships onto each other or out of bounds.
+
+- Random ship placement for computer. Computer ships cannot spawn on each other or out of bounds. It has been taken care of with recursive ship placement function.
+
+- Random index shooting for computer so computer is easy to win. I might improve "AI" some day.
+
+- Tried to make the UI as responsive as possible so you can play it with any screen size. It should not look out of place when adjusting browser size.
+
+### Future improvements
+- I have thought of adding multiplayer at some point. This would require express and websocket.
+
+- Implement computer AI that can play better.
 
 ![alt text](https://i.imgur.com/0QbG8AB.png)
 ![alt text](https://i.imgur.com/fraExVh.png)
